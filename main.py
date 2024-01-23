@@ -71,11 +71,7 @@ def obtener_token(user: User):
         return {"access_token": token}
     else:
         return {
-            "message": "Credenciales incorrectas",
-            "secret": secret,
-            "SECRET": SECRET,
-            "client_id": client_id,
-            "CLIENTID_BPB": CLIENTID_BPB
+            "message": "Credenciales incorrectas"
         }
 
 def dist(i, j):
@@ -1028,13 +1024,13 @@ def bpbComparables(event, context):
 
 def bpb_dicc(dicc: Dict[str, any]) -> Dict[str, Any]:
     load_dotenv(find_dotenv())
-    DRIVER="ODBC Driver 17 for SQL Server"
-    SERVER="ai360cloud.cwbdllecboav.us-east-1.rds.amazonaws.com"
-    PORT=1433
-    DATABASE="ai360cloudprod"
-    UID="admin"
-    PWD="2drow@ssaP"
-    TDS_Version=8.0
+    DRIVER=os.environ.get("DRIVER")
+    SERVER=os.environ.get("SERVER")
+    PORT=os.environ.get("PORT")
+    DATABASE=os.environ.get("DATABASE")
+    UID=os.environ.get("UID")
+    PWD=os.environ.get("PWD")
+    TDS_Version=os.environ.get("TDS_Version")
 
     conn = pyodbc.connect(f'DRIVER={DRIVER}; \
                            SERVER={SERVER}; \
