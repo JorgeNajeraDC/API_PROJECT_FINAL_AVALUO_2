@@ -1380,7 +1380,7 @@ async def calculo_avaluo(Token:str, dicc: Dict[str, Any]= {
              
             cp = check['excepcion']
             
-            DRIVER = os.environ.get('DRIVER')
+            DRIVER = "ODBC Driver 17 for SQL Server"
             SERVER = os.environ.get('SERVER')
             PORT = os.environ.get('PORT')
             DATABASE = os.environ.get('DATABASE')
