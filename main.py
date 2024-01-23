@@ -36,7 +36,8 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Dict, Any
 
-load_dotenv(find_dotenv())
+dotenv_path = '/home/ubuntu/API_PROJECT_FINAL_AVALUO_2/.env'
+load_dotenv(dotenv_path)
 app = FastAPI()
 
 class User(BaseModel):
@@ -1023,7 +1024,7 @@ def bpbComparables(event, context):
         }
 
 def bpb_dicc(dicc: Dict[str, any]) -> Dict[str, Any]:
-    load_dotenv(find_dotenv())
+    load_dotenv(dotenv_path)
     DRIVER = "ODBC Driver 17 for SQL Server"
     SERVER = os.environ.get("SERVER")
     PORT = os.environ.get("PORT")
