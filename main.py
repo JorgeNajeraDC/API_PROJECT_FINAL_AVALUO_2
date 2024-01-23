@@ -36,8 +36,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Dict, Any
 
-dotenv_path = '/home/ubuntu/API_PROJECT_FINAL_AVALUO_2/.env'
-load_dotenv(dotenv_path)
+load_dotenv(find_dotenv())
 app = FastAPI()
 
 class User(BaseModel):
@@ -72,7 +71,11 @@ def obtener_token(user: User):
         return {"access_token": token}
     else:
         return {
-            "message": "Credenciales incorrectas"
+            "message": "Credenciales incorrectas",
+            "secret": secret,
+            "SECRET": SECRET,
+            "client_id": client_id,
+            "CLIENTID_BPB": CLIENTID_BPB
         }
 
 def dist(i, j):
@@ -892,13 +895,14 @@ def bpbComparables(event, context):
 
         if clave in check:
             cp = check['excepcion']
-            DRIVER='ODBC Driver 17 for SQL Server'
-            SERVER='ai360cloud.cwbdllecboav.us-east-1.rds.amazonaws.com'
-            PORT=1433
-            DATABASE='ai360cloudprod'
-            UID='admin'
-            PWD='2drow@ssaP'
-            TDS_Version=8.0
+
+            DRIVER = os.environ.get('DRIVER')
+            SERVER = os.environ.get('SERVER')
+            PORT = os.environ.get('PORT')
+            DATABASE = os.environ.get('DATABASE')
+            UID = os.environ.get('UID')
+            PWD = os.environ.get('PWD')
+            TDS_Version = os.environ.get('TDS_Version')
 
             conn = pyodbc.connect(f'DRIVER={DRIVER}; \
                                 SERVER={SERVER}; \
@@ -1023,14 +1027,14 @@ def bpbComparables(event, context):
         }
 
 def bpb_dicc(dicc: Dict[str, any]) -> Dict[str, Any]:
-    load_dotenv(dotenv_path)
-    DRIVER='ODBC Driver 17 for SQL Server'
-    SERVER='ai360cloud.cwbdllecboav.us-east-1.rds.amazonaws.com'
-    PORT=1433
-    DATABASE='ai360cloudprod'
-    UID='admin'
-    PWD='2drow@ssaP'
-    TDS_Version=8.0
+    load_dotenv(find_dotenv())
+    DRIVER = "ODBC Driver 17 for SQL Server"
+    SERVER = os.environ.get("SERVER")
+    PORT = os.environ.get("PORT")
+    DATABASE = os.environ.get("DATABASE")
+    UID = os.environ.get("UID")
+    PWD = os.environ.get("PWD")
+    TDS_Version = os.environ.get("TDS_Version")
 
     conn = pyodbc.connect(f'DRIVER={DRIVER}; \
                            SERVER={SERVER}; \
@@ -1227,80 +1231,6 @@ def bpb_dicc(dicc: Dict[str, any]) -> Dict[str, Any]:
     conn.close()
     return json_avaluo
 
-def validacionesCampos(dicc): 
-    contador = 0
-    campos_validados = ""
-    campo_validado = ""
-    
-    if dicc['property_details']['address'] == "" and dicc['property_details']['geolocation'] == "": 
-        return "Se requiere la ubcación del inmueble" 
-        
-    if dicc['property_details']['id_appraisal'] == "":  
-        campo_validado += "id_appraisal"
-        campos_validados += "id_appraisal." 
-        contador = contador + 1
-    if dicc['property_details']['address']['zip_code'] == "":
-        campo_validado += "zip_code"
-        campos_validados += "zip_code."
-        contador = contador + 1
-    if dicc['property_details']['info']['land_surface'] == "":
-        campo_validado += "land_surface"
-        campos_validados += "land_surface." 
-        contador = contador + 1  
-    if dicc['property_details']['info']['built_surface'] == "":
-        campo_validado += "built_surface"
-        campos_validados += "built_surface." 
-        contador = contador + 1  
-    if dicc['property_details']['info']['type'] == "":
-        campo_validado += "type"
-        campos_validados += "type." 
-        contador = contador + 1 
-    if dicc['property_details']['info']['age'] == "":
-        campo_validado += "age"
-        campos_validados += "age." 
-        contador = contador + 1 
-        
-    if  contador == 1:
-        respuesta_error_vacio = "El siguiente dato es necesario para realizar la consulta: " + campo_validado
-        return(respuesta_error_vacio) 
-    
-    if  contador > 1:     
-        campos_validados_ordenados1 = campos_validados.replace(".", ", ", contador - 2)
-        campos_validados_ordenados2 = campos_validados_ordenados1.replace(".", " y ", 1)
-        respuestas_errores_vacios = "Los siguientes datos son necesarios para realizar la consulta: " + campos_validados_ordenados2
-        
-        return(respuestas_errores_vacios) 
-   
-    land_surface = dicc['property_details']['info']['land_surface']
-    built_surface = dicc['property_details']['info']['built_surface']
-    
-    land_surface_round = int(float(land_surface)) 
-    built_surface_round = int(float(built_surface))
-    
-    if   int(land_surface_round) <= 0 or int(built_surface_round) <= 0:
-        return "Superficie Inválida"
-    
-    if  int(land_surface_round) <= 30 or int(built_surface_round) <= 30:
-        if int(land_surface_round) > 0 or int(built_surface_round) > 0:
-            return "Superficie muy pequeña para encontrar transacciones"
-
-    if dicc['property_details']['info']['type'] == 4:
-        if  int(land_surface_round) > 300 or int(built_surface_round ) > 300:
-            return "Superficie muy grande para departamentos"
-    
-    calle = dicc['property_details']['address']['street']
-    colonia = dicc['property_details']['address']['block']
-    municipio = dicc['property_details']['address']['locality']
-    estado = dicc['property_details']['address']['state']
-    lat = dicc['property_details']['geolocation']['lat']
-    long = dicc['property_details']['geolocation']['lng']
-    
-    if (calle == "" or colonia == "" or municipio == "" or estado == "") and (lat == "" or long == ""): 
-        return "Se requiere la ubicación del inmueble"
-    
-    return ""
-
-
 @app.post("/api/calculo_avaluo")
 async def calculo_avaluo(Token:str, dicc: Dict[str, Any]= {
     "property_details": {
@@ -1336,147 +1266,11 @@ async def calculo_avaluo(Token:str, dicc: Dict[str, Any]= {
         }
     }
 }):
-
-
     global token
     if token is None:
         return {
             "message": "No se ha generado un token"}  # Manejar el caso de que no se haya generado un token previamente
-    if Token != token:
-        return{
-        "body": json.dumps( {"Errores": {
-                                            "Error": {
-                                                "Descripcion": "Unauthorized",
-                                            			}
-                                         }
-                             }
-                         ),
-        "headers": {},
-        "statusCode": 401
-        }
     else:
-        respuesta_validaciones = validacionesCampos(dicc)
-        
-        if respuesta_validaciones == "":
-            check = bpb_dicc(dicc)
-            
-        else:
-            return{
-                    "body": json.dumps( {"Errores": {
-                                            "Error_1": {
-                                                "Descripcion": str(respuesta_validaciones),
-                                            			 }
-                                                    }
-                                        }
-                                    ),
-                    "headers": {},
-                    "statusCode": 400
-                    }  
-              
-        clave = "excepcion"
-
-        if clave in check:
-             
-           cp = check['excepcion']
-            
-           DRIVER='ODBC Driver 17 for SQL Server'
-           SERVER='ai360cloud.cwbdllecboav.us-east-1.rds.amazonaws.com'
-           PORT=1433
-           DATABASE='ai360cloudprod'
-           UID='admin'
-           PWD='2drow@ssaP'
-           TDS_Version=8.0
-
-           conn = pyodbc.connect(f'DRIVER={DRIVER}; \
-                                SERVER={SERVER}; \
-                                PORT={PORT}; \
-                                DATABASE={DATABASE}; \
-                                UID={UID}; \
-                                PWD={PWD}; \
-                                TDS_Version={TDS_Version}')
-            
-            cursor = conn.cursor()
-            sql = f"""
-                
-                SELECT m2_venta_min, 
-                m2_venta_percentile_10,
-                m2_venta_percentile_20,
-                m2_venta_percentile_30,
-                m2_venta_percentile_40,
-                m2_venta_percentile_50,
-                m2_venta_percentile_60,
-                m2_venta_percentile_70,
-                m2_venta_percentile_80,
-                m2_venta_percentile_90,
-                m2_venta_max,
-                m2_venta_count,
-                m2_venta_mean,
-                Score_Total
-                FROM [ai360cloudprod].[dbo].[FactAvaluoDistribucion_m2_mun] 
-                WHERE CodigoPostal = {cp}
-            
-                """
-    
-            cursor.execute(sql)
-    
-            data = cursor.fetchall()
-            columns = cursor.description 
-            data= [{columns[index][0]:column for index, column in enumerate(value)} for value in data]
-            data = pd.DataFrame(data)
-    
-            dic_comb = {'m2_venta_min': data['m2_venta_min'].values[0],
-                    'm2_venta_percentile_10': data['m2_venta_percentile_10'].values[0],
-                    'm2_venta_percentile_20': data['m2_venta_percentile_20'].values[0],
-                    'm2_venta_percentile_30': data['m2_venta_percentile_30'].values[0],
-                    'm2_venta_percentile_40': data['m2_venta_percentile_40'].values[0],
-                    'm2_venta_percentile_50': data['m2_venta_percentile_50'].values[0],
-                    'm2_venta_percentile_60': data['m2_venta_percentile_60'].values[0],
-                    'm2_venta_percentile_70': data['m2_venta_percentile_70'].values[0],
-                    'm2_venta_percentile_80': data['m2_venta_percentile_80'].values[0],
-                    'm2_venta_percentile_90': data['m2_venta_percentile_90'].values[0],
-                    'm2_venta_max': data['m2_venta_max'].values[0],
-                    'm2_venta_count': data['m2_venta_count'].values[0],
-                    'm2_venta_mean': data['m2_venta_mean'].values[0],
-                    'Score_Total': data['Score_Total'].values[0]
-            }  
-            del data
-            
-            conn.close()
-            
-            return  {
-                                                "Descripcion": "De acuerdo a los datos ingresados no se encuentran comparables",
-                                                "score_zona": str(dic_comb['Score_Total']),
-                                                "Distribucion_m2": {
-                                                "count": str(dic_comb['m2_venta_count']),
-                                                "mean": str(dic_comb['m2_venta_mean']),
-                                                "min": str(dic_comb['m2_venta_min']),
-                                                "q10": str(dic_comb['m2_venta_percentile_10']),
-                                                "q20": str(dic_comb['m2_venta_percentile_20']),
-                                                "q30": str(dic_comb['m2_venta_percentile_30']),
-                                                "q40": str(dic_comb['m2_venta_percentile_40']),
-                                                "q50": str(dic_comb['m2_venta_percentile_50']),
-                                                "q60": str(dic_comb['m2_venta_percentile_60']),
-                                                "q70": str(dic_comb['m2_venta_percentile_70']),
-                                                "q80": str(dic_comb['m2_venta_percentile_80']),
-                                                "q90": str(dic_comb['m2_venta_percentile_90']),
-                                                "max": str(dic_comb['m2_venta_max'])
-                                            			 }
-                                    }      
-        
-        if type(check['property']['requestor_details']['id_apprasial']) == str:
-        
-
-            return check
-        
-        else:
-            
-            check = bpb_dicc(dicc)
-            
-            
-
-            response={
-            "body": json.dumps(check)}
-
-
+        json_avaluo = bpb_dicc(dicc)
         token = None
-    
+        return json_avaluo
