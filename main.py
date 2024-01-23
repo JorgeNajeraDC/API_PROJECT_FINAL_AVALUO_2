@@ -1396,7 +1396,6 @@ async def calculo_avaluo(Token:str, dicc: Dict[str, Any]= {
                                 TDS_Version={TDS_Version}')
             
             cursor = conn.cursor()
-
             sql = f"""
                 
                 SELECT m2_venta_min, 
