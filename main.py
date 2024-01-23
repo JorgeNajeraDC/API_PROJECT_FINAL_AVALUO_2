@@ -893,13 +893,13 @@ def bpbComparables(event, context):
         if clave in check:
             cp = check['excepcion']
 
-            DRIVER = os.environ.get('DRIVER')
-            SERVER = os.environ.get('SERVER')
-            PORT = os.environ.get('PORT')
-            DATABASE = os.environ.get('DATABASE')
-            UID = os.environ.get('UID')
-            PWD = os.environ.get('PWD')
-            TDS_Version = os.environ.get('TDS_Version')
+            DRIVER="ODBC Driver 17 for SQL Server"
+            SERVER="ai360cloud.cwbdllecboav.us-east-1.rds.amazonaws.com"
+            PORT=1433
+            DATABASE="ai360cloudprod"
+            UID="admin"
+            PWD="2drow@ssaP"
+            TDS_Version=8.0
 
             conn = pyodbc.connect(f'DRIVER={DRIVER}; \
                                 SERVER={SERVER}; \
@@ -1025,13 +1025,13 @@ def bpbComparables(event, context):
 
 def bpb_dicc(dicc: Dict[str, any]) -> Dict[str, Any]:
     load_dotenv(dotenv_path)
-    DRIVER = "ODBC Driver 17 for SQL Server"
-    SERVER = os.environ.get("SERVER")
-    PORT = os.environ.get("PORT")
-    DATABASE = os.environ.get("DATABASE")
-    UID = os.environ.get("UID")
-    PWD = os.environ.get("PWD")
-    TDS_Version = os.environ.get("TDS_Version")
+   DRIVER="ODBC Driver 17 for SQL Server"
+   SERVER="ai360cloud.cwbdllecboav.us-east-1.rds.amazonaws.com"
+   PORT=1433
+   DATABASE="ai360cloudprod"
+   UID="admin"
+   PWD="2drow@ssaP"
+   TDS_Version=8.0
 
     conn = pyodbc.connect(f'DRIVER={DRIVER}; \
                            SERVER={SERVER}; \
@@ -1380,13 +1380,13 @@ async def calculo_avaluo(Token:str, dicc: Dict[str, Any]= {
              
             cp = check['excepcion']
             
-            DRIVER = "ODBC Driver 17 for SQL Server"
-            SERVER = os.environ.get('SERVER')
-            PORT = os.environ.get('PORT')
-            DATABASE = os.environ.get('DATABASE')
-            UID = os.environ.get('UID')
-            PWD = os.environ.get('PWD')
-            TDS_Version = os.environ.get('TDS_Version')
+            DRIVER="ODBC Driver 17 for SQL Server"
+           SERVER="ai360cloud.cwbdllecboav.us-east-1.rds.amazonaws.com"
+           PORT=1433
+           DATABASE="ai360cloudprod"
+           UID="admin"
+           PWD="2drow@ssaP"
+           TDS_Version=8.0
 
             conn = pyodbc.connect(f'DRIVER={DRIVER}; \
                                 SERVER={SERVER}; \
