@@ -71,11 +71,7 @@ def obtener_token(user: User):
         return {"access_token": token}
     else:
         return {
-            "message": "Credenciales incorrectas",
-            "secret": secret,
-            "SECRET": SECRET,
-            "client_id": client_id,
-            "CLIENTID_BPB": CLIENTID_BPB
+            "message": "Credenciales incorrectas"
         }
 
 def dist(i, j):
