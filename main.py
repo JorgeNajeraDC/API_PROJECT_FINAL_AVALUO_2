@@ -1028,14 +1028,14 @@ def bpb_dicc(dicc: Dict[str, any]) -> Dict[str, Any]:
     PORT=os.environ.get("PORT")
     DATABASE=os.environ.get("DATABASE")
     UID=os.environ.get("UID")
-    PWD=os.environ.get("PWD")
+    CONTR=os.environ.get("CONTR")
     TDS_Version=os.environ.get("TDS_Version")
 
     conn = pyodbc.connect(f'DRIVER={DRIVER}; \
                            SERVER={SERVER}; \
                            PORT={PORT}; \
                            DATABASE={DATABASE}; \
-                           UID={UID}; \
+                           UID={CONTR}; \
                            PWD={PWD}; \
                            TDS_Version={TDS_Version}')
 
