@@ -1035,8 +1035,8 @@ def bpb_dicc(dicc: Dict[str, any]) -> Dict[str, Any]:
                            SERVER={SERVER}; \
                            PORT={PORT}; \
                            DATABASE={DATABASE}; \
-                           UID={CONTR}; \
-                           PWD={PWD}; \
+                           UID={UID}; \
+                           PWD={CONTR}; \
                            TDS_Version={TDS_Version}')
 
     idval = str(dicc['property_details']['id_appraisal'])
