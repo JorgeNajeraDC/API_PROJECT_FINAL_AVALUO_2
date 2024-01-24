@@ -1023,7 +1023,6 @@ def bpbComparables(event, context):
         }
 
 def bpb_dicc(dicc: Dict[str, any]) -> Dict[str, Any]:
-    load_dotenv(find_dotenv())
     DRIVER=os.environ.get("DRIVER")
     SERVER=os.environ.get("SERVER")
     PORT=os.environ.get("PORT")
