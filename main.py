@@ -1023,7 +1023,7 @@ def bpbComparables(event, context):
         }
 
 def bpb_dicc(dicc: Dict[str, any]) -> Dict[str, Any]:
-    DRIVER="DRIVER=ODBC Driver 17 for SQL Server"
+    DRIVER="ODBC Driver 17 for SQL Server"
     SERVER=os.environ.get("SERVER")
     PORT=os.environ.get("PORT")
     DATABASE=os.environ.get("DATABASE")
